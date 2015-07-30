@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
@@ -15,4 +16,7 @@ setuptools.setup(
     author_email='wesley@bwbaugh.com',
     url='https://github.com/bwbaugh/rotal',
     packages=setuptools.find_packages(exclude=['tests*']),
+    install_requires=[
+        'Click',
+    ],
 )
