@@ -1,0 +1,11 @@
+language: python
+env:
+    - TOXENV=py34
+install:
+    - pip install coveralls tox --use-mirrors
+script:
+    - tox
+    - tox -e pre-commit -- run --all-files
+after_success:
+    - coveralls
+sudo: false
