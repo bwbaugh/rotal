@@ -1,11 +1,20 @@
 language: python
 env:
-    - TOXENV=py27
+- TOXENV=py27
 install:
-    - pip install coveralls tox --use-mirrors
+- pip install coveralls tox --use-mirrors
 script:
-    - tox
-    - tox -e pre-commit -- run --all-files
+- tox
+- tox -e pre-commit -- run --all-files
 after_success:
-    - coveralls
+- coveralls
 sudo: false
+deploy:
+  provider: pypi
+  user: bwbaugh
+  password:
+    secure: ZVUrUFWHOmSTiJfl7EGUuLBh9sMQS56rRFWqWy58263LIobGctG4An/ZyTaxejmntsvrKdam0zEWW3blb9hN61dDgkBwRmlPiV7ffl6gtxTcWBAN2oWY1fkmHGUnsDK6kZRW6yCIrtRpU1+K54aaRn+qYq6lLPCbQWktkoj3kaBz+opZC4TQElGKKUaYS/UcEQpEaqRcjzCt+c3r4vVDCwdvCAxpxtnr3UALTfgH+AYEkHFHSJzBzF3uz6Oyc0mFK2G9TWqK5sLkNO2dgaWg+VFvXzXzNDZRIXD4/iZMvWbMyQc3gg+JbEMa/C2iE+HeffE+Ov32TwOcNJ6zTJc4GsjTSWN8fyeC5UCvFVAquMEUZIlMuEB9vHEKvA4uic3BjWTfJclru8lEoUGPhxHOVAnjo0xh1kNKq4IhLEqJUaaMtcFM9jXM4EmUKKziC4spr+gCCl3+R9Lg2F/BnRvJVYWOOu2ALqNLeYX4B6jJUP/ugOwBar9mmMiV5RkAiAkdywagWRXWrzcQ4OoTi7Zvr4M1+EfVNtmnAcDirOlIsSEjYZsR3ewj1aCmpREUR+v7RClxhL0oO1OH220zWXavvwDRShRBvT4ZcTQqyIrIEgUt4uSGmhxHSRyYPbHAKWnSf0cNzsxdf84JaN1JyMy5znarN+peXygpVJJcXnIelUI=
+  distributions: "sdist bdist_wheel"
+  on:
+    tags: true
+    repo: bwbaugh/rotal
