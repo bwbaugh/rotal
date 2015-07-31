@@ -5,12 +5,39 @@ from __future__ import unicode_literals
 
 import collections
 import signal
+import threading
+import time
 
 import click
 
 
 ASCII_CURSOR_UP = '\033[{num_lines}A'
 ASCII_ERASE_TO_END = '\033[K'
+
+
+class OutputThread(threading.Thread):
+
+    def __init__(self, changed_event, counter):
+        super(OutputThread, self).__init__()
+        self.changed = changed_event
+        self.counter = counter
+
+    def run(self):
+        # Keep track of how many lines we need to move the cursor up.
+        num_last_output_lines = 0
+        while True:
+            self.changed.wait()
+            self.changed.clear()
+            output(
+                formatted_output=format_output_uniqc(
+                    # Ensure the order is consistent. Alphabetical order also
+                    #   more closely matches the behavior or `sort | uniq -c`.
+                    ordered_counts=sorted(self.counter.iteritems()),
+                ),
+                num_last_output_lines=num_last_output_lines,
+            )
+            num_last_output_lines = len(self.counter)
+            time.sleep(0.5)
 
 
 @click.command(epilog='Source: https://github.com/bwbaugh/rotal')
@@ -22,20 +49,16 @@ def main():
     """
     # Prevent a broken pipe IOError when used with commands like `head`.
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
     counter = collections.Counter()
-    # Keep track of how many lines we need to move the cursor up.
-    num_last_output_lines = 0
+    changed_event = threading.Event()
+    output_thread = OutputThread(changed_event=changed_event, counter=counter)
+    output_thread.daemon = True
+    output_thread.start()
+
     for line in click.get_text_stream('stdin'):
         increment_counter(line=line.rstrip('\n'), counter=counter)
-        output(
-            formatted_output=format_output_uniqc(
-                # Ensure the order is consistent. Alphabetical order also
-                #   more closely matches the behavior or `sort | uniq -c`.
-                ordered_counts=sorted(counter.iteritems()),
-            ),
-            num_last_output_lines=num_last_output_lines,
-        )
-        num_last_output_lines = len(counter)
+        changed_event.set()
 
 
 def increment_counter(line, counter):
