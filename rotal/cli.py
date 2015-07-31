@@ -21,7 +21,7 @@ def main():
     for line in click.get_text_stream('stdin'):
         increment_counter(line=line.rstrip('\n'), counter=counter)
         output(
-            formatted_output=format_output(
+            formatted_output=format_output_uniqc(
                 # Ensure the order is consistent. Alphabetical order also
                 #   more closely matches the behavior or `sort | uniq -c`.
                 ordered_counts=sorted(counter.iteritems()),
@@ -33,11 +33,11 @@ def increment_counter(line, counter):
     counter[line] += 1
 
 
-def format_output(ordered_counts):
+def format_output_uniqc(ordered_counts):
+    """Imitate the format of ``uniq -c``."""
     return '\n'.join(
-        # Show count first followed by key, consistent with `sort | uniq -c`.
-        '\t'.join(unicode(x) for x in reversed(item))
-        for item in ordered_counts
+        '{count} {key}'.format(key=key, count=str(count).rjust(4))
+        for key, count in ordered_counts
     )
 
 

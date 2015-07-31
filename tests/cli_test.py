@@ -15,16 +15,16 @@ from rotal import cli
 
 VALID_TEST_CASES = {
     'no_value': ('', ''),
-    'one_value': ('foo\n', '1\tfoo\n'),
+    'one_value': ('foo\n', '   1 foo\n'),
     'two_different_values': (
         """\
 foo
 bar
 """,
         """\
-1\tfoo
-1\tbar
-1\tfoo
+   1 foo
+   1 bar
+   1 foo
 """
     ),
 }
@@ -80,3 +80,40 @@ class TestSignalHandling(object):
                 time.sleep(0.1)
         # (Negative means exited cleanly due to that signal.) (Unix only!)
         assert process.returncode == -signal.SIGPIPE
+
+
+class TestFormatOutputUniqc(object):
+
+    @pytest.mark.parametrize(
+        argnames='ordered_counts,expected',
+        argvalues=[
+            [[('foo', 1)], '   1 foo'],
+            [[('foo', 40)], '  40 foo'],
+            [[('foo', 117)], ' 117 foo'],
+            [[('foo', 1211)], '1211 foo'],
+            [[('bar', 1), ('foo', 2)], '   1 bar\n   2 foo'],
+            [
+                [('a', 35), ('b', 101), ('c', 13720)],
+                """\
+  35 a
+ 101 b
+13720 c\
+"""],
+        ],
+        ids=[
+            'one_item_one_digit',
+            'one_item_two_digits',
+            'one_item_three_digits',
+            'one_item_four_digits',
+            'newline_separates_multiple_items',
+            # `uniq -c` uses at most three spaces, and doesn't add more
+            #   in order to align other rows that might have less in
+            #   the event that a count is greater than four digits.
+            'pad_each_line_independently',
+        ],
+    )
+    def test_output(self, ordered_counts, expected):
+        # When we format the output for the "<ordered_counts>"
+        result = cli.format_output_uniqc(ordered_counts=ordered_counts)
+        # Then the output should match "<expected>"
+        assert result == expected
