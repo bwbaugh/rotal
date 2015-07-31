@@ -15,16 +15,16 @@ from rotal import cli
 
 VALID_TEST_CASES = {
     'no_value': ('', ''),
-    'one_value': ('foo\n', 'foo\t1\n'),
+    'one_value': ('foo\n', '1\tfoo\n'),
     'two_different_values': (
         """\
 foo
 bar
 """,
         """\
-foo\t1
-bar\t1
-foo\t1
+1\tfoo
+1\tbar
+1\tfoo
 """
     ),
 }

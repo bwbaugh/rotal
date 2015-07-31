@@ -35,7 +35,9 @@ def increment_counter(line, counter):
 
 def format_output(ordered_counts):
     return '\n'.join(
-        '\t'.join(unicode(x) for x in item) for item in ordered_counts
+        # Show count first followed by key, consistent with `sort | uniq -c`.
+        '\t'.join(unicode(x) for x in reversed(item))
+        for item in ordered_counts
     )
 
 
