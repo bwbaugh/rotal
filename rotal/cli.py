@@ -30,5 +30,7 @@ def format_output(counter):
 def get_output_lines(counter):
     return [
         '\t'.join(unicode(x) for x in item)
-        for item in counter.iteritems()
+        # Ensure the order is consistent. Alphabetical order also
+        #   more closely matches the behavior or `sort | uniq -c`.
+        for item in sorted(counter.iteritems())
     ]
