@@ -1,6 +1,6 @@
-#####
+=====
 rotal
-#####
+=====
 
 .. image:: https://travis-ci.org/bwbaugh/rotal.svg?branch=master
     :target: https://travis-ci.org/bwbaugh/rotal
