@@ -23,6 +23,7 @@ bar
 """,
         """\
    1 foo
+
    1 bar
    1 foo
 """
@@ -116,4 +117,4 @@ class TestFormatOutputUniqc(object):
         # When we format the output for the "<ordered_counts>"
         result = cli.format_output_uniqc(ordered_counts=ordered_counts)
         # Then the output should match "<expected>"
-        assert result == expected
+        assert '\n'.join(result) == expected
