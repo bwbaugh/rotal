@@ -9,7 +9,7 @@ import signal
 import click
 
 
-@click.command()
+@click.command(epilog='Source: https://github.com/bwbaugh/rotal')
 @click.version_option()
 def main():
     """Get a running count of occurrences from a stream.
