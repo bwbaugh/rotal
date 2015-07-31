@@ -15,6 +15,13 @@ setuptools.setup(
     author='Wesley Baugh',
     author_email='wesley@bwbaugh.com',
     url='https://github.com/bwbaugh/rotal',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Utilities',
+    ],
     packages=setuptools.find_packages(exclude=['tests*']),
     install_requires=[
         'Click',
