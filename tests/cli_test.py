@@ -17,8 +17,15 @@ VALID_TEST_CASES = {
     'no_value': ('', ''),
     'one_value': ('foo\n', 'foo\t1\n'),
     'two_different_values': (
-        'foo\nbar\n',
-        'foo\t1\nbar\t1\nfoo\t1\n',
+        """\
+foo
+bar
+""",
+        """\
+foo\t1
+bar\t1
+foo\t1
+"""
     ),
 }
 
