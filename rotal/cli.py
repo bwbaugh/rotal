@@ -4,6 +4,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import collections
+import signal
 
 import click
 
@@ -14,6 +15,8 @@ def main():
 
     Intended to replace `sort | uniq -c` when the input is a stream.
     """
+    # Prevent a broken pipe IOError when used with commands like `head`.
+    signal.signal(signal.SIGPIPE, signal.SIG_DFL)
     counter = collections.Counter()
     for line in click.get_text_stream('stdin'):
         increment_counter(line=line.rstrip('\n'), counter=counter)
