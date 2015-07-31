@@ -14,23 +14,28 @@ def main():
 
     Intended to replace `sort | uniq -c` when the input is a stream.
     """
-    stdin = click.get_text_stream('stdin')
     counter = collections.Counter()
-    for line in stdin:
-        click.clear()
-        line = line.rstrip('\n')
-        counter[line] += 1
-        click.echo(format_output(counter=counter))
+    for line in click.get_text_stream('stdin'):
+        increment_counter(line=line.rstrip('\n'), counter=counter)
+        output(
+            formatted_output=format_output(
+                # Ensure the order is consistent. Alphabetical order also
+                #   more closely matches the behavior or `sort | uniq -c`.
+                ordered_counts=sorted(counter.iteritems()),
+            )
+        )
 
 
-def format_output(counter):
-    return '\n'.join(get_output_lines(counter=counter))
+def increment_counter(line, counter):
+    counter[line] += 1
 
 
-def get_output_lines(counter):
-    return [
-        '\t'.join(unicode(x) for x in item)
-        # Ensure the order is consistent. Alphabetical order also
-        #   more closely matches the behavior or `sort | uniq -c`.
-        for item in sorted(counter.iteritems())
-    ]
+def format_output(ordered_counts):
+    return '\n'.join(
+        '\t'.join(unicode(x) for x in item) for item in ordered_counts
+    )
+
+
+def output(formatted_output):
+    click.clear()
+    click.echo(message=formatted_output)
