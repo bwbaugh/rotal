@@ -10,6 +10,7 @@ import click
 
 
 @click.command()
+@click.version_option()
 def main():
     """Get a running count of occurrences from a stream.
 
